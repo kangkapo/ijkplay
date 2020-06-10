@@ -20,7 +20,8 @@
 
 6.　开始编译
 
-  下在以来的代码，ffmpeg,yuv等
+技巧：　init-android　会下载IJK的ｆｆｍｐｅｇ代码，ｇｉｔｈｕｂ下载比较慢，可以修改init-android.sh　init-android-openssl.sh 里的下载地址，在gitee上先同步一份，然后从ｇｉｔｅｅ下载
+ 
   ./init-android.sh
 　　
   ./init-android-openssl.sh 
