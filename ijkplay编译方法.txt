@@ -1,0 +1,59 @@
+0．ubuntu　16.04下编译，其他环境下没有验证
+1. 代码下载　github 下载对应版本的ijk https://github.com/bilibili/ijkplayer　最新的0.8.8地址
+2．android SDK下载，安装。　wget http://dl.google.com/android/android-sdk_r24.2-linux.tgz 进行 sdk 的下载
+　　然后使用命令tar -xvf android-sdk_r24.2-linux.tgz进行解压。
+　　敲入命令cd android-sdk-linux/tools进入到该目录，
+　　使用命令./android update sdk --no-ui安装sdk的包。
+3. NDK下载：ndk:　需要的android-ndk-r10e-linux-x86_64.bin
+4. 需要的jdk: jdk-8u151-linux-x64.tar.gz
+5. 配置编译环境：
+	export JAVA_HOME=/home/kangkapo/JDK/jdk1.8.0_241 
+	export JRE_HOME=${JAVA_HOME}/jre 
+	export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib 
+	export PATH=${JAVA_HOME}/bin:$PATH
+
+	export ANDROID_HOME=/home/kangkapo/NdkSdkForijk/android-sdk-linux
+	export ANDROID_NDK=/home/kangkapo/NdkSdkForijk/android-ndk-r10e 
+	export PATH=$ANDROID_NDK:$PATH
+
+	export PATH=${PATH}:/home/kangkapo/NdkSdkForijk/android-sdk-linux/platform-tools:/home/kangkapo/NdkSdkForijk/android-sdk-linux/tools:/home/kangkapo/NdkSdkForijk/android-sdk-linux/build-tools/23.0.1/
+
+6.　开始编译
+
+  下在以来的代码，ffmpeg,yuv等
+  ./init-android.sh
+　　
+  ./init-android-openssl.sh 
+  cd android/contrib 
+  ./compile-openssl.sh armv7a
+  ./compile-ffmpeg.sh clean
+  ./compile-ffmpeg.sh armv7a
+
+  cd .. 
+  ./compile-ijk.sh clean
+  ./compile-ijk.sh armv7a
+  cd ijkplayer
+  ./gradlew clean
+  ./gradlew build
+
+7. 修改
+   logcat打印日志:　修改ff_ffplay.c中的（ijksdl_log.h中不用修就可以打印）
+	static void ffp_log_callback_brief(void *ptr, int level, const char *fmt, va_list vl)
+	{
+	    if (level > av_log_get_level())
+	       return;
+
+	    int ffplv __unused = log_level_av_to_ijk(level);
+	    VLOG(ffplv, IJK_LOG_TAG, fmt, vl);
+	}
+	为：
+	static void ffp_log_callback_brief(void *ptr, int level, const char *fmt, va_list vl)
+	{
+	  //  if (level > av_log_get_level())
+	  //     return;
+
+	    int ffplv __unused = log_level_av_to_ijk(level);
+	    VLOG(ffplv, IJK_LOG_TAG, fmt, vl);
+	}
+
+
